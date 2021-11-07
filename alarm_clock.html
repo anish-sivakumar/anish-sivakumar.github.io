@@ -1,0 +1,165 @@
+<!DOCTYPE HTML>
+<!--
+	Forty by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Anish Sivakumar</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<a href="index.html" class="logo"><strong>Anish</strong> <span>Sivakumar</span></a>
+						<nav>
+							<a href="#menu">Menu</a>
+						</nav>
+					</header>
+
+				<!-- Menu -->
+					<nav id="menu">
+						<ul class="links">
+							<li><a href="index.html">Home</a></li>
+							<li><a href="projects.html">Projects</a></li>
+							<!-- <li><a href="experience.html">Experience</a></li>
+							<li><a href="elements.html">Elements</a></li>
+							<li><a href="generic.html">Generic story</a></li> -->
+						</ul>
+					</nav>
+
+				<!-- Main -->
+					<div id="main" class="alt">
+
+						<!-- One -->
+							<section id="one">
+								<div class="inner">
+									<header class="major">
+										<h1>Custom Alarm Clock</h1>
+									</header>
+									<span class="image main"><img src="images/alarm_clock_pcb.png" alt="PCB" /></span>
+									<h2 id="content">PCB</h2>
+									<p>We used an STM32f407 Discovery board as our microcontroller, push buttons to provide user input, and the LTC-4727JR quad seven-segment display to display the time. To signal that the alarm has expired, we used a CPI-137-83T buzzer to generate noise and a SLR-56VRT32 5mm LED. To signal if the alarm is active, we used a 151031SS04000 3mm LED. To supply power to the board, we will use a PJ-063AH barrel jack connector.</p>
+									<p>The buzzer requires a 5V supply voltage to produce an 83 dB noise (roughly a typical alarm volume) and will draw 6mA at 5V
+									The 5mm LED has a typical forward voltage of 2V, at which it will draw 10mA
+									The 3mm LED has a typical forward voltage of 2V, at which it will draw 20mA
+									Each segment in the 7-segment display has a forward voltage of 1.95V when drawing 18mA
+									The STM32 requires a supply voltage of 1.8V-3.6V. As we will be relying on the digital I/O pins to provide 3V, we will aim to maximize this supply voltage while assuring it does not pass the 3.6V maximum.</p>
+									<p>In addition to component requirements, we decided to add our own requirements to improve user experience, as follows:</p>
+									<p>The user should be able to configure the snooze time to any minute length less than an hour (excluding 0 minutes).
+									The user should be able to disable an upcoming alarm without having to modify the alarm time setting.
+									The user should be able to disable an upcoming alarm without having to modify the alarm time setting.
+									An extra push button should be added in case we decide to modify the user interface (UI) after our initial testing.
+									Push buttons should be debounced using hardware.</p>
+									<span class="image main"><img src="images/alarm_clock_fsm.png" alt="FSM" /></span>
+									<span class="image main"><img src="images/alarm_clock_schem.png" alt="Schematic" /></span>
+									<span class="image main"><img src="images/alarm_clock_code.png" alt="Code" /></span>
+									<h2 id="content">Code</h2>
+									<p>The software has three main components: a real-time clock with an alarm function, a recurring timer-based interrupt to control the display and a finite state machine to provide a UI.</p>
+									<p>To provide the clock and alarm functionality, we used the built-in RTC in the STM32’s HAL library. This was configured to a 24-hour format for simplicity. The alarm and clock were both defaulted to 00:00 when the device is turned on, and both could be configured to any 24-hour time. When the clock time is turned to the alarm time, an interrupt is triggered which enables the buzzer and LED.
+									</p>
+									<p>To control the display, a recurring interrupt was triggered every 4ms (250 Hz) to determine what number to display on which digit of the display. By mapping each digit to a number 0-4 and using a global variable called “displayedDigit” which is incremented each iteration of the recurring interrupt, we are able to cycle through the digits fast enough so that the clock appears to display them all simultaneously. As there are 5 digits on the display (D1, D2, L, D3, D4) and only one can be displayed at a time, each digit is displayed at a rate of 50 Hz.
+									</p>
+									<p>The UI was implemented using finite state machine logic. 8 states were used to provide the ability to view and edit the current clock, alarm, and snooze settings, as well as a state for when the alarm is ringing. Depending on the current state, pressing any of the OK, UP, DN or SNZ buttons may cause a state transition or edit parameters such as alarm time, clock time, or snooze time (see lines 430-720 below for more details). The current state also affects which of the clock, alarm, or snooze settings are being displayed.
+									</p>
+									
+									<span class="image main"><img src="images/alarm-clock1.png" alt="alarm clock" /></span>
+									<h2 id="content">Housing</h2>
+									<p>The enclosure for the Alarm Clock was designed in SolidWorks. The design involved 4 structural components (front, back with a stand, and two feet) and 8 socket head cap screws for fastening the parts together. The design was modeled using the PCB, STM board, and header mounts as a constraint. </p>
+									
+									
+								</div>
+							</section>
+
+					</div>
+
+				<!-- Contact 
+					<section id="contact">
+						<div class="inner">
+							<section>
+								<form method="post" action="#">
+									<div class="fields">
+										<div class="field half">
+											<label for="name">Name</label>
+											<input type="text" name="name" id="name" />
+										</div>
+										<div class="field half">
+											<label for="email">Email</label>
+											<input type="text" name="email" id="email" />
+										</div>
+										<div class="field">
+											<label for="message">Message</label>
+											<textarea name="message" id="message" rows="6"></textarea>
+										</div>
+									</div>
+									<ul class="actions">
+										<li><input type="submit" value="Send Message" class="primary" /></li>
+										<li><input type="reset" value="Clear" /></li>
+									</ul>
+								</form>
+							</section>
+							<section class="split">
+								<section>
+									<div class="contact-method">
+										<span class="icon solid alt fa-envelope"></span>
+										<h3>Email</h3>
+										<a href="#">information@untitled.tld</a>
+									</div>
+								</section>
+								<section>
+									<div class="contact-method">
+										<span class="icon solid alt fa-phone"></span>
+										<h3>Phone</h3>
+										<span>(000) 000-0000 x12387</span>
+									</div>
+								</section>
+								<section>
+									<div class="contact-method">
+										<span class="icon solid alt fa-home"></span>
+										<h3>Address</h3>
+										<span>1234 Somewhere Road #5432<br />
+										Nashville, TN 00000<br />
+										United States of America</span>
+									</div>
+								</section>
+							</section>
+						</div>
+					</section>
+				-->
+				<!-- Footer -->
+					<footer id="footer">
+						<div class="inner">
+							<ul class="icons">
+								<li><a href="#" class="icon brands alt fa-twitter"><span class="label">Twitter</span></a></li>
+								<li><a href="#" class="icon brands alt fa-facebook-f"><span class="label">Facebook</span></a></li>
+								<li><a href="#" class="icon brands alt fa-instagram"><span class="label">Instagram</span></a></li>
+								<li><a href="#" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
+								<li><a href="#" class="icon brands alt fa-linkedin-in"><span class="label">LinkedIn</span></a></li>
+							</ul>
+							<ul class="copyright">
+								<li>&copy; Untitled</li><li>Design: <a href="https://html5up.net">HTML5 UP</a></li>
+							</ul>
+						</div>
+					</footer>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
